@@ -2,26 +2,26 @@ import React from 'react';
 import cn from 'classnames';
 
 interface Props {
-  checkTodoCompleted: () => number;
-  handleToggleActivate: () => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  setNewTodoTitle: (value: React.SetStateAction<string>) => void;
   allTodos: React.MutableRefObject<number>;
-  newTodoTitle: string;
   inputRef: React.RefObject<HTMLInputElement>;
   isSubmiting: boolean;
+  newTodoTitle: string;
+  handleSubmit: (e: React.FormEvent) => void;
+  setNewTodoTitle: (value: React.SetStateAction<string>) => void;
+  checkTodoCompleted: () => number;
+  handleToggleActivate: () => void;
 }
 
 export const Header: React.FC<Props> = React.memo(
   ({
-    checkTodoCompleted,
-    handleToggleActivate,
-    handleSubmit,
-    setNewTodoTitle,
     allTodos,
-    newTodoTitle,
     inputRef,
     isSubmiting,
+    newTodoTitle,
+    handleSubmit,
+    setNewTodoTitle,
+    checkTodoCompleted,
+    handleToggleActivate,
   }) => {
     return (
       <header className="todoapp__header">

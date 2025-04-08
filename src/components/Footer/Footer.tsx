@@ -1,39 +1,42 @@
-import React, { useCallback } from 'react';
-import { FilterSelectType } from '../../types/FilterSelectType';
+import React, { useCallback, useMemo } from 'react';
+import { FilterSelectEnum } from '../../types/FilterSelectType';
 import { FilterSelect } from '../FilterSelect';
 import { Todo } from '../../types/Todo';
 
 interface Props {
   todos: Todo[];
   allTodos: React.MutableRefObject<number>;
-  filterSelect: FilterSelectType[];
-  filterIndex: number;
-  handleSelectFilter: (index: number) => void;
-  handleClearCompleted: () => void;
+  selectedFilter: FilterSelectEnum;
+  onSelectedFilter: (option: FilterSelectEnum) => void;
   checkTodoCompleted: () => number;
+  handleClearCompleted: () => void;
 }
 
 export const Footer: React.FC<Props> = React.memo(
   ({
     todos,
     allTodos,
-    filterSelect,
-    filterIndex,
-    handleSelectFilter,
-    handleClearCompleted,
+    selectedFilter,
+    onSelectedFilter,
     checkTodoCompleted,
+    handleClearCompleted,
   }) => {
+    const filterSelect: FilterSelectEnum[] = useMemo(
+      () => Object.values(FilterSelectEnum),
+      [],
+    );
+
     const itemsLeft = useCallback(() => {
       const activeTodos = todos.filter(todo => !todo.completed);
 
-      if (filterIndex === 1) {
+      if (selectedFilter === FilterSelectEnum.Active) {
         return activeTodos.length === 0 && checkTodoCompleted() === 0
           ? 0
           : activeTodos.length;
       }
 
       return allTodos.current - checkTodoCompleted();
-    }, [todos, filterIndex, allTodos, checkTodoCompleted]);
+    }, [todos, allTodos, checkTodoCompleted]);
 
     return (
       <footer className="todoapp__footer" data-cy="Footer">
@@ -42,14 +45,12 @@ export const Footer: React.FC<Props> = React.memo(
         </span>
 
         <nav className="filter" data-cy="Filter">
-          {filterSelect.map((option, index) => (
+          {filterSelect.map(option => (
             <FilterSelect
               key={option}
               option={option}
-              index={index}
-              filterIndex={filterIndex}
-              filterSelect={filterSelect}
-              handleSelectFilter={handleSelectFilter}
+              onSelectedFilter={onSelectedFilter}
+              selectedFilter={selectedFilter}
             />
           ))}
         </nav>

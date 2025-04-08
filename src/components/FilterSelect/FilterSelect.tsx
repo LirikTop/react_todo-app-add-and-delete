@@ -1,22 +1,26 @@
 import React from 'react';
-import { FilterSelectType } from '../../types/FilterSelectType';
+import { FilterSelectEnum } from '../../types/FilterSelectType';
+import cn from 'classnames';
 
 interface Props {
-  filterIndex: number;
-  index: number;
-  handleSelectFilter: (index: number) => void;
-  filterSelect: FilterSelectType[];
-  option: FilterSelectType;
+  option: FilterSelectEnum;
+  selectedFilter: FilterSelectEnum;
+  onSelectedFilter: (option: FilterSelectEnum) => void;
 }
 
 export const FilterSelect: React.FC<Props> = React.memo(
-  ({ filterIndex, handleSelectFilter, filterSelect, index, option }) => {
+  ({ onSelectedFilter, option, selectedFilter }) => {
+    const checkHref =
+      option === FilterSelectEnum.All ? '' : option.toLowerCase();
+
     return (
       <a
-        href={`#/${index ? filterSelect[index] : ''}`}
-        className={`filter__link ${index === filterIndex ? 'selected' : ''}`}
+        href={`#/${checkHref}`}
+        className={cn('filter__link', {
+          selected: selectedFilter === option,
+        })}
         data-cy={`FilterLink${option}`}
-        onClick={() => handleSelectFilter(index)}
+        onClick={() => onSelectedFilter(option)}
       >
         {option}
       </a>

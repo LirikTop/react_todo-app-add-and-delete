@@ -4,26 +4,28 @@ import cn from 'classnames';
 
 interface Props {
   todo: Todo;
-  handleUpdateCompleted: (data: Todo, bool?: boolean) => Promise<Todo>;
   loading: boolean;
+  inputRef: React.RefObject<HTMLInputElement>;
   selectedTodo: Todo | null;
+  handleUpdateCompleted: (data: Todo, bool?: boolean) => Promise<Todo>;
   deleteTodo: (todoId: number) => Promise<void>;
   handleUpdateTitle: (data: Todo) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 export const TodoComponent: React.FC<Props> = React.memo(
   ({
     todo,
+    loading,
+    inputRef,
+    selectedTodo,
     handleUpdateCompleted,
     handleUpdateTitle,
-    loading,
-    selectedTodo,
     deleteTodo,
-    inputRef,
   }) => {
+    const { id, title, completed } = todo;
+
+    const [editTitle, setEditTitle] = useState(title);
     const [editActive, setEditActive] = useState(false);
-    const [editTitle, setEditTitle] = useState(todo.title);
     const [localLoading, setLocalLoading] = useState(false);
 
     const isActive =
@@ -54,9 +56,9 @@ export const TodoComponent: React.FC<Props> = React.memo(
 
     const handleDelete = useCallback(async () => {
       setLocalLoading(true);
-      await deleteTodo(todo.id);
+      await deleteTodo(id);
       setLocalLoading(false);
-    }, [deleteTodo, todo.id]);
+    }, [deleteTodo, id]);
 
     const handleUpdate = useCallback(
       async (data: Todo) => {
@@ -68,13 +70,13 @@ export const TodoComponent: React.FC<Props> = React.memo(
     );
 
     return (
-      <div data-cy="Todo" className={cn('todo', { completed: todo.completed })}>
+      <div data-cy="Todo" className={cn('todo', { completed: completed })}>
         <label className="todo__status-label" aria-label="Toggle todo status">
           <input
             data-cy="TodoStatus"
             type="checkbox"
             className="todo__status"
-            checked={todo.completed}
+            checked={completed}
             onChange={() => handleUpdate(todo)}
             disabled={loading}
           />
@@ -87,7 +89,7 @@ export const TodoComponent: React.FC<Props> = React.memo(
               className="todo__title hidden"
               onDoubleClick={() => handleEdit(todo)}
             >
-              {todo.title}
+              {title}
             </span>
 
             <button
